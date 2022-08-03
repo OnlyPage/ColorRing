@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: f176bcf1639d6004e84ee90512c5a290
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: ViolentaSolidUnicaseW01-Rg
+  fontNames:
+  - ViolentaSolidUnicaseW01-Rg
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
