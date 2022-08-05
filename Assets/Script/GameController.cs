@@ -119,14 +119,33 @@ public class GameController : MonoBehaviour
     public void RandomCircle()
     {
         int randomCircle = Random.Range(1, numberCircle + 1);
+
+        List<CirclePrefab> listRandom = new List<CirclePrefab>();
+
+        foreach(CirclePrefab circlePrefab in circlePrefabs)
+        {
+            if(!circlePrefab.IsFull)
+            {
+                listRandom.Add(circlePrefab);
+            }
+        }
+
+        CirclePrefab circle = listRandom[Random.Range(0, listRandom.Count)];
+
         List<RingParameter> circles = new List<RingParameter>();
         List<CircleSizeType> newSize = new List<CircleSizeType>();
         newSize.Add(CircleSizeType.Big);
         newSize.Add(CircleSizeType.Normal);
         newSize.Add(CircleSizeType.Small);
+        
+        foreach(CircleSizeType circleSizeType in circle.GetCircleActive())
+        {
+            newSize.Remove(circleSizeType);
+        }
+
         for (int i = 0; i < randomCircle; i++)
         {
-            int sizeType = Random.Range(0, sizeTypes.Count);
+            int sizeType = Random.Range(0, newSize.Count);
             ColorType colorType = randomColor();
             circles.Add(ringDatabase.GetRingByColorAndSize(colorType, newSize[sizeType]));
             newSize.RemoveAt(sizeType);

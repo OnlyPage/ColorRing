@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using System.Linq;
 
 public class CirclePrefab : MonoBehaviour 
 {
     [SerializeField]
     List<Circle> Circles;
+
+    private bool isFull;
+    public bool IsFull { get => isFull; private set => isFull = value; }
 
     private void Start()
     {
@@ -28,6 +32,7 @@ public class CirclePrefab : MonoBehaviour
     }
 
     protected List<RingParameter> circles = new List<RingParameter>();
+
     public bool SetCircle(List<RingParameter> circles)
     {
         foreach (RingParameter ringParameter in circles)
@@ -46,6 +51,10 @@ public class CirclePrefab : MonoBehaviour
         }
 
         this.circles.AddRange(circles);
+        if(circles.Count >= 3)
+        {
+            isFull = true;
+        }
 
         return true;
     }
@@ -60,6 +69,11 @@ public class CirclePrefab : MonoBehaviour
         Circle circle = getCircleBySize(circleSize);
         circle.circleImage.gameObject.SetActive(false);
         circle.isAcive = false;
+        circles.RemoveAll(data => data.sizeType == circleSize);
+        if(circles.Count < 3)
+        {
+            isFull = false;
+        }
     }
 
     public void ClearAllCircle()
@@ -101,5 +115,15 @@ public class CirclePrefab : MonoBehaviour
     public int GetNumberColor()
     {
         return circles.Count;
+    }
+
+    public List<CircleSizeType> GetCircleActive()
+    {
+        List<CircleSizeType> circleSizeTypes = new List<CircleSizeType>();
+        foreach(RingParameter ring in circles)
+        {
+            circleSizeTypes.Add(ring.sizeType);
+        }
+        return circleSizeTypes;
     }
 }
