@@ -130,6 +130,13 @@ public class GameController : MonoBehaviour
             }
         }
 
+        if(listRandom.Count == 0)
+        {
+            SetLose();
+            return;
+        }
+
+
         CirclePrefab circle = listRandom[Random.Range(0, listRandom.Count)];
 
         List<RingParameter> circles = new List<RingParameter>();
@@ -219,34 +226,19 @@ public class GameController : MonoBehaviour
             Debug.Log("======");
             point += count * 100;
             pointText.text = point.ToString();
-            if(point > 2000)
+            if(point > 500)
             {
                 numberCircle = 2;
                 numberColor = 4;
             }    
 
-            if(point > 4500)
+            if(point > 1000)
             {
                 numberColor = 5;
             }
         }
 
         numberRoll = 0;
-
-        bool checkLose = true;
-        foreach(CirclePrefab circlePrefab in circlePrefabs)
-        {
-            if(circlePrefab.GetNumberColor() < 3)
-            {
-                checkLose = false;
-                break;
-            }
-        }
-
-        if(checkLose)
-        {
-            SetLose();
-        }
     }
 
     private bool CheckColor(List<CirclePrefab> listToCheck, ColorType color)
