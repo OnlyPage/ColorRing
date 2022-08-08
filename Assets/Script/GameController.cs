@@ -71,6 +71,7 @@ public class GameController : MonoBehaviour
         for(int i = 0; i < width * width; i++)
         {
             CirclePrefab circle = Instantiate(circlePrefab, table);
+            circle.name = i.ToString();
             circle.setIndex(i);
             circlePrefabs.Add(circle);
         }
@@ -118,8 +119,6 @@ public class GameController : MonoBehaviour
 
     public void RandomCircle()
     {
-        int randomCircle = Random.Range(1, numberCircle + 1);
-
         List<CirclePrefab> listRandom = new List<CirclePrefab>();
 
         foreach(CirclePrefab circlePrefab in circlePrefabs)
@@ -136,8 +135,10 @@ public class GameController : MonoBehaviour
             return;
         }
 
+        int randomCell = Random.Range(0, listRandom.Count);
+        CirclePrefab circle = listRandom[randomCell];
 
-        CirclePrefab circle = listRandom[Random.Range(0, listRandom.Count)];
+        Debug.Log("Circle random: " + circle.GetIndex());
 
         List<RingParameter> circles = new List<RingParameter>();
         List<CircleSizeType> newSize = new List<CircleSizeType>();
@@ -150,9 +151,20 @@ public class GameController : MonoBehaviour
             newSize.Remove(circleSizeType);
         }
 
+        int randomCircle;
+        if(numberCircle > newSize.Count)
+        {
+            randomCircle = Random.Range(1, newSize.Count + 1);
+        }
+        else
+        {
+            randomCircle = Random.Range(1, numberCircle + 1);
+        }
+
         for (int i = 0; i < randomCircle; i++)
         {
             int sizeType = Random.Range(0, newSize.Count);
+            Debug.Log("Tan new size " + sizeType + " || size count: " + newSize.Count);
             ColorType colorType = randomColor();
             circles.Add(ringDatabase.GetRingByColorAndSize(colorType, newSize[sizeType]));
             newSize.RemoveAt(sizeType);
@@ -222,8 +234,6 @@ public class GameController : MonoBehaviour
                 }
             }
 
-            Debug.Log("Check color " + color + " row " + row + " " + checkRow + " || column " + column + " " + checkColumn);
-            Debug.Log("======");
             point += count * 100;
             pointText.text = point.ToString();
             if(point > 500)

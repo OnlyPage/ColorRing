@@ -51,7 +51,7 @@ public class CirclePrefab : MonoBehaviour
         }
 
         this.circles.AddRange(circles);
-        if(circles.Count >= 3)
+        if(this.circles.Count >= 3)
         {
             isFull = true;
         }
