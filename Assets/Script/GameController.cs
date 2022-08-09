@@ -71,6 +71,7 @@ public class GameController : MonoBehaviour
         for(int i = 0; i < width * width; i++)
         {
             CirclePrefab circle = Instantiate(circlePrefab, table);
+            circle.name = i.ToString();
             circle.setIndex(i);
             circlePrefabs.Add(circle);
         }
@@ -118,15 +119,52 @@ public class GameController : MonoBehaviour
 
     public void RandomCircle()
     {
-        int randomCircle = Random.Range(1, numberCircle + 1);
+        List<CirclePrefab> listRandom = new List<CirclePrefab>();
+
+        foreach(CirclePrefab circlePrefab in circlePrefabs)
+        {
+            if(!circlePrefab.IsFull)
+            {
+                listRandom.Add(circlePrefab);
+            }
+        }
+
+        if(listRandom.Count == 0)
+        {
+            SetLose();
+            return;
+        }
+
+        int randomCell = Random.Range(0, listRandom.Count);
+        CirclePrefab circle = listRandom[randomCell];
+
+        Debug.Log("Circle random: " + circle.GetIndex());
+
         List<RingParameter> circles = new List<RingParameter>();
         List<CircleSizeType> newSize = new List<CircleSizeType>();
         newSize.Add(CircleSizeType.Big);
         newSize.Add(CircleSizeType.Normal);
         newSize.Add(CircleSizeType.Small);
+        
+        foreach(CircleSizeType circleSizeType in circle.GetCircleActive())
+        {
+            newSize.Remove(circleSizeType);
+        }
+
+        int randomCircle;
+        if(numberCircle > newSize.Count)
+        {
+            randomCircle = Random.Range(1, newSize.Count + 1);
+        }
+        else
+        {
+            randomCircle = Random.Range(1, numberCircle + 1);
+        }
+
         for (int i = 0; i < randomCircle; i++)
         {
-            int sizeType = Random.Range(0, sizeTypes.Count);
+            int sizeType = Random.Range(0, newSize.Count);
+            Debug.Log("Tan new size " + sizeType + " || size count: " + newSize.Count);
             ColorType colorType = randomColor();
             circles.Add(ringDatabase.GetRingByColorAndSize(colorType, newSize[sizeType]));
             newSize.RemoveAt(sizeType);
@@ -196,38 +234,21 @@ public class GameController : MonoBehaviour
                 }
             }
 
-            Debug.Log("Check color " + color + " row " + row + " " + checkRow + " || column " + column + " " + checkColumn);
-            Debug.Log("======");
             point += count * 100;
             pointText.text = point.ToString();
-            if(point > 2000)
+            if(point > 500)
             {
                 numberCircle = 2;
                 numberColor = 4;
             }    
 
-            if(point > 4500)
+            if(point > 1000)
             {
                 numberColor = 5;
             }
         }
 
         numberRoll = 0;
-
-        bool checkLose = true;
-        foreach(CirclePrefab circlePrefab in circlePrefabs)
-        {
-            if(circlePrefab.GetNumberColor() < 3)
-            {
-                checkLose = false;
-                break;
-            }
-        }
-
-        if(checkLose)
-        {
-            SetLose();
-        }
     }
 
     private bool CheckColor(List<CirclePrefab> listToCheck, ColorType color)
