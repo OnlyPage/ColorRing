@@ -24,7 +24,15 @@ public class GameController : MonoBehaviour
     private TMPro.TextMeshProUGUI pointText;
 
     [SerializeField]
-    private TMPro.TextMeshProUGUI buttonText;
+    private EffectLineController effectRow;
+    [SerializeField]
+    private EffectLineController effectCollum;
+    [SerializeField]
+    private EffectLineController effectDiaginalLeft;
+    [SerializeField]
+    private EffectLineController effectDiaginalRight;
+    [SerializeField]
+    private ColorDatabase colorDatabase;
 
     private List<CirclePrefab> circlePrefabs;
     private Dictionary<int, List<CirclePrefab>> listRow = new Dictionary<int, List<CirclePrefab>>();
@@ -179,8 +187,9 @@ public class GameController : MonoBehaviour
         return colorTypes[colorRandom];
     }
 
-    public void CheckPoint(int index, List<ColorType> colors)
+    public void CheckPoint(CirclePrefab cirlcle, List<ColorType> colors)
     {
+        int index = cirlcle.GetIndex();
         int row = index / 3;
         int column = index % 3;
 
@@ -191,6 +200,8 @@ public class GameController : MonoBehaviour
             bool checkDiagonalLeft = false;
             bool checkDiagonalRight = false;
             int count = 0;
+
+            Color color1 = GetColorByColorType(color);
 
             if(listDiagonalLeft.ContainsKey(index))
             {
@@ -208,6 +219,8 @@ public class GameController : MonoBehaviour
                 {
                     count += circlePrefab.ClearColor(color);
                 }
+                effectRow.transform.localPosition = new Vector3(effectRow.transform.localPosition.x, cirlcle.transform.localPosition.y, effectRow.transform.localPosition.z);
+                effectRow.PlayEffect(color1);
             }
 
             if (checkColumn)
@@ -216,6 +229,9 @@ public class GameController : MonoBehaviour
                 {
                     count += circlePrefab.ClearColor(color);
                 }
+                effectCollum.transform.localPosition = new Vector3(cirlcle.transform.localPosition.x, effectCollum.transform.localPosition.y, effectCollum.transform.localPosition.z);
+                effectCollum.PlayEffect(color1);
+
             }
 
             if(checkDiagonalLeft)
@@ -224,6 +240,7 @@ public class GameController : MonoBehaviour
                 {
                     count += circlePrefab.ClearColor(color);
                 }
+                effectDiaginalLeft.PlayEffect(color1);
             }
 
             if (checkDiagonalRight)
@@ -232,10 +249,18 @@ public class GameController : MonoBehaviour
                 {
                     count += circlePrefab.ClearColor(color);
                 }
+                effectDiaginalRight.PlayEffect(color1);
+            }
+
+            if(cirlcle.CheckColor())
+            {
+                count += 3;
+                cirlcle.ClearAllCircle();
             }
 
             point += count * 100;
             pointText.text = point.ToString();
+
             if(point > 500)
             {
                 numberCircle = 2;
@@ -249,18 +274,6 @@ public class GameController : MonoBehaviour
         }
 
         numberRoll = 0;
-    }
-
-    private bool CheckColor(List<CirclePrefab> listToCheck, ColorType color)
-    {
-        foreach(CirclePrefab circlePrefab in listToCheck)
-        {
-            if(!circlePrefab.ContainsColor(color))
-            {
-                return false;
-            }
-        }
-        return true;
     }
 
     public void OnClick_Roll()
@@ -288,11 +301,27 @@ public class GameController : MonoBehaviour
         }
     }
 
+    public Color GetColorByColorType(ColorType colorType)
+    {
+        return colorDatabase.GetColorByColorType(colorType).color;
+    }    
+
+    private bool CheckColor(List<CirclePrefab> listToCheck, ColorType color)
+    {
+        foreach (CirclePrefab circlePrefab in listToCheck)
+        {
+            if (!circlePrefab.ContainsColor(color))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private void SetLose()
     {
         isLose = true;
         pointText.text = "YOU LOSE!";
-        buttonText.text = "RESTART";
     }
 
     private void Restart()
