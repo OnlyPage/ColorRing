@@ -32,6 +32,8 @@ public class GameController : MonoBehaviour
     [SerializeField]
     private EffectLineController effectDiaginalRight;
     [SerializeField]
+    private EffectLineController effectCircle;
+    [SerializeField]
     private ColorDatabase colorDatabase;
 
     private List<CirclePrefab> circlePrefabs;
@@ -187,6 +189,7 @@ public class GameController : MonoBehaviour
         return colorTypes[colorRandom];
     }
 
+    [System.Obsolete]
     public void CheckPoint(CirclePrefab cirlcle, List<ColorType> colors)
     {
         int index = cirlcle.GetIndex();
@@ -256,6 +259,8 @@ public class GameController : MonoBehaviour
             {
                 count += 3;
                 cirlcle.ClearAllCircle();
+                effectCircle.transform.localPosition = new Vector3(cirlcle.transform.localPosition.x, cirlcle.transform.localPosition.y, effectCircle.transform.localPosition.z);
+                effectCircle.PlayEffect(color1);
             }
 
             point += count * 100;
