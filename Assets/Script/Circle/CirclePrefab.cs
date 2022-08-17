@@ -126,4 +126,28 @@ public class CirclePrefab : MonoBehaviour
         }
         return circleSizeTypes;
     }
+
+    public bool CheckColor()
+    {
+        int count = 1;
+        for(int i = 0; i < circles.Count - 1; i++)
+        {
+            if(circles[i + 1].colorType == circles[i].colorType)
+            {
+                count++;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        if(count == Circles.Count)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }

@@ -41,7 +41,7 @@ public class CircleRandom : CirclePrefab, IDragHandler, IEndDragHandler
             {
                 colors.Add(ring.colorType);
             }
-            GameController.Instance.CheckPoint(parent.GetComponent<CirclePrefab>().GetIndex(), colors);
+            GameController.Instance.CheckPoint(parent.GetComponent<CirclePrefab>(), colors);
             ClearAllCircle();
             GameController.Instance.RandomCircle();
             onTrigger = false;
