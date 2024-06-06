@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class GameController : MonoBehaviour
 {
@@ -35,6 +36,8 @@ public class GameController : MonoBehaviour
     private EffectLineController effectCircle;
     [SerializeField]
     private ColorDatabase colorDatabase;
+    [SerializeField]
+    private List<GameObject> listRowParent;
 
     private List<CirclePrefab> circlePrefabs;
     private Dictionary<int, List<CirclePrefab>> listRow = new Dictionary<int, List<CirclePrefab>>();
@@ -80,7 +83,7 @@ public class GameController : MonoBehaviour
     {
         for(int i = 0; i < width * width; i++)
         {
-            CirclePrefab circle = Instantiate(circlePrefab, table);
+            CirclePrefab circle = Instantiate(circlePrefab);
             circle.name = i.ToString();
             circle.setIndex(i);
             circlePrefabs.Add(circle);
@@ -99,6 +102,8 @@ public class GameController : MonoBehaviour
                 newList.Add(circlePrefabs[i]);
                 listRow.Add(row, newList);
             }
+
+            circlePrefabs[i].transform.SetParent(listRowParent[row].transform, false);
 
             int column = i % 3;
             if (listColumn.ContainsKey(column))
@@ -125,6 +130,12 @@ public class GameController : MonoBehaviour
 
         colorTypes = ringDatabase.GetListColor();
         sizeTypes = ringDatabase.GetListSize();
+
+        DOVirtual.DelayedCall(0.1f, () =>
+        {
+            CircleRandom.instance.GetComponent<RectTransform>().sizeDelta = circlePrefabs[0].GetComponent<RectTransform>().sizeDelta;
+        });
+        
     }
 
     public void RandomCircle()
@@ -222,7 +233,7 @@ public class GameController : MonoBehaviour
                 {
                     count += circlePrefab.ClearColor(color);
                 }
-                effectRow.transform.localPosition = new Vector3(effectRow.transform.localPosition.x, cirlcle.transform.localPosition.y, effectRow.transform.localPosition.z);
+                effectRow.transform.position = new Vector3(effectRow.transform.position.x, cirlcle.transform.position.y, effectRow.transform.position.z);
                 effectRow.PlayEffect(color1);
             }
 
@@ -232,7 +243,7 @@ public class GameController : MonoBehaviour
                 {
                     count += circlePrefab.ClearColor(color);
                 }
-                effectCollum.transform.localPosition = new Vector3(cirlcle.transform.localPosition.x, effectCollum.transform.localPosition.y, effectCollum.transform.localPosition.z);
+                effectCollum.transform.position = new Vector3(cirlcle.transform.position.x, effectCollum.transform.position.y, effectCollum.transform.position.z);
                 effectCollum.PlayEffect(color1);
 
             }
@@ -259,7 +270,7 @@ public class GameController : MonoBehaviour
             {
                 count += 3;
                 cirlcle.ClearAllCircle();
-                effectCircle.transform.localPosition = new Vector3(cirlcle.transform.localPosition.x, cirlcle.transform.localPosition.y, effectCircle.transform.localPosition.z);
+                effectCircle.transform.position = new Vector3(cirlcle.transform.position.x, cirlcle.transform.position.y, effectCircle.transform.position.z);
                 effectCircle.PlayEffect(color1);
             }
 
